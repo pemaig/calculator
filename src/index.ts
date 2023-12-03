@@ -4,30 +4,23 @@
  * - cases with Infinity/NaN: division by 0;
  * - chaining operations: val + oper + val + oper + result
  */
+type Operations = '+' | '-' | '*' | '/';
 
 const numsButtons = Array.from(document.getElementsByClassName("num"));
-const opersButtons = Array.from(document.getElementsByClassName("oper"));
+const operationButtons = Array.from(document.getElementsByClassName("oper"));
 
-const display = document.getElementsByClassName("display")[0];
-const clearBtn = document.getElementsByClassName("clear")[0];
-const resultBtn = document.getElementsByClassName("result")[0];
+const display = document.getElementsByClassName("display")[0] as HTMLElement;
+const clearBtn = document.getElementsByClassName("clear")[0]  as HTMLElement;
+const resultBtn = document.getElementsByClassName("result")[0]  as HTMLElement;
 
-const sumBtn = document.getElementsByClassName("sum")[0];
-const subBtn = document.getElementsByClassName("sub")[0];
-const mulBtn = document.getElementsByClassName("mul")[0];
-const divBtn = document.getElementsByClassName("div")[0];
+let previousValue: number | null = null;
+let currentOperation: Operations | null = null;
 
-let previousValue = null;
-let currentOperation = null;
-let withDot = false;
-
-function getDisplayedValue() {
+function getDisplayedValue(): number {
   return Number(display.innerText);
 }
 
-function setDisplayedValue(newVal) {
-  if (newVal === null) return;
-
+function setDisplayedValue(newVal: number | string) {
   display.innerText = String(newVal);
 }
 
@@ -35,26 +28,26 @@ function getPreviousValue() {
   return previousValue ?? 0;
 }
 
-function setPreviousValue(val) {
+function setPreviousValue(val: number | null) {
   previousValue = val;
 }
 
-function getCurrentOperation() {
+function getCurrentOperation(): Operations | null {
   return currentOperation;
 }
 
-function setCurrentOperation(newOperation) {
+function setCurrentOperation(newOperation: Operations | null) {
   currentOperation = newOperation;
 }
 
-function clearBtnOnClick(e) {
+function clearBtnOnClick(e: Event) {
   setDisplayedValue(0);
   setPreviousValue(null);
   setCurrentOperation(null);
 }
 
-function numsButtonsOnClick(e) {
-  const input = e.target.innerText;
+function numsButtonsOnClick(e: Event) {
+  const input = (e.target as HTMLElement).innerText;
   const displayedValue = getDisplayedValue();
   const newDisplayedValue =
     displayedValue === 0 ? input : `${displayedValue}${input}`;
@@ -62,12 +55,12 @@ function numsButtonsOnClick(e) {
   setDisplayedValue(newDisplayedValue);
 }
 
-function operationBtnOnClick(e) {
-  const newOperation = e.target.innerText;
+function operationBtnOnClick(e: Event) {
+  const newOperation = (e.target as HTMLElement).innerText;
   const result = calculateResult();
 
   setPreviousValue(result);
-  setCurrentOperation(newOperation);
+  setCurrentOperation(newOperation as Operations);
   setDisplayedValue(0);
 }
 
@@ -85,7 +78,7 @@ function calculateResult() {
   return result;
 }
 
-function resultBtnOnclick(e) {
+function resultBtnOnclick(e: Event) {
   let result = calculateResult();
 
   setPreviousValue(result);
@@ -96,7 +89,7 @@ function resultBtnOnclick(e) {
 numsButtons.forEach((button) =>
   button.addEventListener("click", numsButtonsOnClick),
 );
-opersButtons.forEach((button) =>
+operationButtons.forEach((button) =>
   button.addEventListener("click", operationBtnOnClick),
 );
 clearBtn.addEventListener("click", clearBtnOnClick);
