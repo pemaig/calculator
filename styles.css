@@ -1,0 +1,23 @@
+body {
+  font-family: sans-serif;
+}
+
+input {
+  width: 146px;
+}
+
+button {
+  width: 35px;
+  padding: 5px 0;
+  margin: 2px 0;
+  cursor: pointer;
+}
+
+.display {
+  display: flex;
+  align-items: center;
+  border: 1px solid black;
+  height: 30px;
+  max-width: 150px;
+  padding: 0 3px;
+}
