@@ -9,6 +9,7 @@
         "sourceType": "module"
     },
     "rules": {
-        "max-len": ["warn", 120]
+        "max-len": ["warn", 120],
+        "no-trailing-spaces": "off"
     }
 }
