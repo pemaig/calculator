@@ -3,8 +3,9 @@
  * - dot sign
  * - cases with Infinity/NaN: division by 0;
  * - chaining operations: val + oper + val + oper + result
+ * - add tests
  */
-type Operations = '+' | '-' | '*' | '/'
+type Operations = '+' | '-' | '*' | '/' | '='
 
 const numsButtons = Array.from(document.getElementsByClassName('num'))
 const operationButtons = Array.from(document.getElementsByClassName('oper'))
@@ -13,46 +14,61 @@ const display = document.getElementsByClassName('display')[0] as HTMLElement
 const clearBtn = document.getElementsByClassName('clear')[0] as HTMLElement
 const resultBtn = document.getElementsByClassName('result')[0] as HTMLElement
 
-let previousValue: number | null = null
-let currentOperation: Operations | null = null
+let previousValue: number = 0
+let currentOperation: Operations = '='
+let isInsertMode: boolean = false
+
+function getInsertMode (): boolean {
+  return isInsertMode
+}
+
+function setInsertMode (val: boolean): void {
+  isInsertMode = val
+}
 
 function getDisplayedValue (): number {
   return Number(display.innerText)
 }
 
-function setDisplayedValue (newVal: number | string): void {
+function setDisplayedValue (newVal: number): void {
   display.innerText = String(newVal)
 }
 
 function getPreviousValue (): number {
-  return previousValue ?? 0
+  return previousValue
 }
 
-function setPreviousValue (val: number | null): void {
+function setPreviousValue (val: number): void {
   previousValue = val
 }
 
-function getCurrentOperation (): Operations | null {
+function getCurrentOperation (): Operations {
   return currentOperation
 }
 
-function setCurrentOperation (newOperation: Operations | null): void {
+function setCurrentOperation (newOperation: Operations): void {
   currentOperation = newOperation
 }
 
 function clearBtnOnClick (_: Event): void {
   setDisplayedValue(0)
-  setPreviousValue(null)
-  setCurrentOperation(null)
+  setPreviousValue(0)
+  setCurrentOperation('=')
+  setInsertMode(false)
 }
 
 function numsButtonsOnClick (e: Event): void {
-  const input = (e.target as HTMLElement).innerText
+  const input = Number((e.target as HTMLElement).innerText)
   const displayedValue = getDisplayedValue()
-  const newDisplayedValue =
-    displayedValue === 0 ? input : `${displayedValue}${input}`
-
-  setDisplayedValue(newDisplayedValue)
+  
+  if (getInsertMode()) {
+    setDisplayedValue(Number(`${displayedValue}${input}`))
+  } else {
+    setDisplayedValue(input)
+    if (input !== 0) {
+      setInsertMode(true)
+    }
+  }
 }
 
 function operationBtnOnClick (e: Event): void {
@@ -60,20 +76,22 @@ function operationBtnOnClick (e: Event): void {
   const result = calculateResult()
 
   setPreviousValue(result)
+  setDisplayedValue(result)
   setCurrentOperation(newOperation as Operations)
-  setDisplayedValue(0)
+  setInsertMode(false)
 }
 
 function calculateResult (): number {
-  const previousValue = getPreviousValue()
-  const displayedValue = getDisplayedValue()
+  const leftOperand = getPreviousValue()
+  const rightOperand = getDisplayedValue()
   const currentOperation = getCurrentOperation()
-  let result = previousValue ?? displayedValue
+  let result = leftOperand
 
-  currentOperation === '+' && (result += displayedValue)
-  currentOperation === '-' && (result -= displayedValue)
-  currentOperation === '*' && (result *= displayedValue)
-  currentOperation === '/' && (result /= displayedValue)
+  currentOperation === '+' && (result += rightOperand)
+  currentOperation === '-' && (result -= rightOperand)
+  currentOperation === '*' && (result *= rightOperand)
+  currentOperation === '/' && (result /= rightOperand)
+  currentOperation === '=' && (result = rightOperand)
 
   return result
 }
@@ -81,9 +99,9 @@ function calculateResult (): number {
 function resultBtnOnclick (_: Event): void {
   const result = calculateResult()
 
-  setPreviousValue(result)
-  setCurrentOperation(null)
   setDisplayedValue(result)
+  setCurrentOperation('=')
+  setInsertMode(false)
 }
 
 numsButtons.forEach((button) => { button.addEventListener('click', numsButtonsOnClick) })
