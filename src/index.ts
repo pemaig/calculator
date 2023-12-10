@@ -69,13 +69,29 @@ function calculateResult (): number {
   const currentOperation = Calculator.getCurrentOperation()
   let result = leftOperand
   
-  currentOperation === '+' && (result += rightOperand)
-  currentOperation === '-' && (result -= rightOperand)
-  currentOperation === '*' && (result *= rightOperand)
-  currentOperation === '/' && (result /= rightOperand)
-  currentOperation === '=' && (result = rightOperand)
-  currentOperation === '+/-' && (result = -rightOperand)
-  currentOperation === '%' && (result = rightOperand / 100)
+  switch (currentOperation) {
+    case '+/-':
+      result = 0 - rightOperand
+      break
+    case '%':
+      result = rightOperand / 100
+      break
+    case '+':
+      result += rightOperand
+      break
+    case '-':
+      result -= rightOperand
+      break
+    case '*':
+      result *= rightOperand
+      break
+    case '/':
+      result /= rightOperand
+      break
+    case '=':
+    default:
+      result = rightOperand
+  }
   
   return result
 }
