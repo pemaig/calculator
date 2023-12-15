@@ -1,9 +1,18 @@
 import { display } from './elements.js'
 import { type Operators } from './types.js'
 
-export let previousValue: number = 0
-export let currentOperation: Operators = '='
-export let isInsertMode: boolean = false
+let previousValue: number = 0
+let currentOperation: Operators = '='
+let isInsertMode: boolean = true
+let isFloat: boolean = false
+
+export function getIsFloat (): boolean {
+  return isFloat
+}
+
+export function setIsFloat (val: boolean): void {
+  isFloat = val
+}
 
 export function getInsertMode (): boolean {
   return isInsertMode
@@ -13,11 +22,11 @@ export function setInsertMode (val: boolean): void {
   isInsertMode = val
 }
 
-export function getDisplayedValue (): number {
-  return Number(display.innerText)
+export function getDisplayedValue (): string {
+  return display.innerText
 }
 
-export function setDisplayedValue (newVal: number): void {
+export function setDisplayedValue (newVal: number | string): void {
   display.innerText = String(newVal)
 }
 

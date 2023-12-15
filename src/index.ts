@@ -6,8 +6,8 @@ import { type Operators } from './types.js'
  * PROBLEMS:
  * + chaining operations: val + operation + val + operation + result
  * + error handling
+ * + dot sign
  * - rename project to serious_calculator
- * - dot sign
  * - add tests
  * - cases with Infinity/NaN: division by 0;
  * - could be too many symbols, need to set boundary
@@ -22,19 +22,41 @@ function clearBtnOnClick (_: Event): void {
   Calculator.setPreviousValue(0)
   Calculator.setCurrentOperation('=')
   Calculator.setInsertMode(false)
+  Calculator.setIsFloat(false)
 }
 
 function numsButtonsOnClick (e: Event): void {
-  const input = Number((e.target as HTMLElement).innerText)
+  const input = (e.target as HTMLElement).innerText
   const displayedValue = Calculator.getDisplayedValue()
+  const isInsertMode = Calculator.getInsertMode()
+  const isFloat = Calculator.getIsFloat()
+  const isOnlyZero = displayedValue === '0'
+  const isDotInput = input === '.'
   
-  if (Calculator.getInsertMode()) {
-    Calculator.setDisplayedValue(Number(`${displayedValue}${input}`))
-  } else {
-    Calculator.setDisplayedValue(input)
-    if (input !== 0) {
-      Calculator.setInsertMode(true)
+  if (isInsertMode) {
+    if (isOnlyZero) {
+      if (isDotInput) {
+        Calculator.setDisplayedValue(`${displayedValue}${input}`)
+        Calculator.setIsFloat(true)
+      } else {
+        Calculator.setDisplayedValue(input)
+      }
+    } else {
+      if (isDotInput && isFloat) {
+        return
+      } else {
+        Calculator.setDisplayedValue(`${displayedValue}${input}`)
+      }
     }
+  } else {
+    if (isDotInput) {
+      Calculator.setDisplayedValue(`0${input}`)
+      Calculator.setIsFloat(true)
+    } else {
+      Calculator.setDisplayedValue(input)
+    }
+    
+    Calculator.setInsertMode(true)
   }
 }
 
@@ -61,11 +83,12 @@ function operationBtnOnClick (e: Event): void {
   Calculator.setPreviousValue(result)
   Calculator.setDisplayedValue(result)
   Calculator.setInsertMode(false)
+  Calculator.setIsFloat(false)
 }
 
 function calculateResult (): number {
   const leftOperand = Calculator.getPreviousValue()
-  const rightOperand = Calculator.getDisplayedValue()
+  const rightOperand = Number(Calculator.getDisplayedValue())
   const currentOperation = Calculator.getCurrentOperation()
   let result = leftOperand
   
@@ -96,20 +119,21 @@ function calculateResult (): number {
   return result
 }
 
-function resultBtnOnclick (_: Event): void {
+function resultBtnOnClick (_: Event): void {
   const result = calculateResult()
 
   Calculator.setDisplayedValue(result)
   Calculator.setCurrentOperation('=')
   Calculator.setInsertMode(false)
+  Calculator.setIsFloat(false)
 }
 
-function ErrorHandler (error: ErrorEvent): void {
+function errorHandler (error: ErrorEvent): void {
   console.error(error)
 }
 
 Elements.numsButtons.forEach((button) => { button.addEventListener('click', numsButtonsOnClick) })
 Elements.operationButtons.forEach((button) => { button.addEventListener('click', operationBtnOnClick) })
 Elements.clearBtn.addEventListener('click', clearBtnOnClick)
-Elements.resultBtn.addEventListener('click', resultBtnOnclick)
-window.addEventListener('error', ErrorHandler)
+Elements.resultBtn.addEventListener('click', resultBtnOnClick)
+window.addEventListener('error', errorHandler)
