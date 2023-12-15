@@ -7,41 +7,41 @@ let isInsertMode: boolean = true
 let isFloat: boolean = false
 
 export function getIsFloat (): boolean {
-  return isFloat
+    return isFloat
 }
 
 export function setIsFloat (val: boolean): void {
-  isFloat = val
+    isFloat = val
 }
 
 export function getInsertMode (): boolean {
-  return isInsertMode
+    return isInsertMode
 }
 
 export function setInsertMode (val: boolean): void {
-  isInsertMode = val
+    isInsertMode = val
 }
 
 export function getDisplayedValue (): string {
-  return display.innerText
+    return display.innerText
 }
 
 export function setDisplayedValue (newVal: number | string): void {
-  display.innerText = String(newVal)
+    display.innerText = String(newVal)
 }
 
 export function getPreviousValue (): number {
-  return previousValue
+    return previousValue
 }
 
 export function setPreviousValue (val: number): void {
-  previousValue = val
+    previousValue = val
 }
 
 export function getCurrentOperation (): Operators {
-  return currentOperation
+    return currentOperation
 }
 
 export function setCurrentOperation (newOperation: Operators): void {
-  currentOperation = newOperation
+    currentOperation = newOperation
 }

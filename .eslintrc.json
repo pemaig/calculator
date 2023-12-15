@@ -9,6 +9,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "@typescript-eslint/indent": ["warn", 4],
         "max-len": ["warn", 120],
         "no-trailing-spaces": "off",
         "no-useless-return": "off"
