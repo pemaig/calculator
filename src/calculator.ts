@@ -4,15 +4,6 @@ import { type Operators } from './types.js'
 let previousValue: number = 0
 let currentOperation: Operators = '='
 let isInsertMode: boolean = true
-let isFloat: boolean = false
-
-export function getIsFloat (): boolean {
-    return isFloat
-}
-
-export function setIsFloat (val: boolean): void {
-    isFloat = val
-}
 
 export function getInsertMode (): boolean {
     return isInsertMode

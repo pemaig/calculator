@@ -22,48 +22,50 @@ function clearBtnOnClick (_: Event): void {
     Calculator.setPreviousValue(0)
     Calculator.setCurrentOperation('=')
     Calculator.setInsertMode(false)
-    Calculator.setIsFloat(false)
 }
 
 function numsButtonsOnClick (e: Event): void {
     const input = (e.target as HTMLElement).innerText
     const displayedValue = Calculator.getDisplayedValue()
     const isInsertMode = Calculator.getInsertMode()
-    const isFloat = Calculator.getIsFloat()
-    const isOnlyZero = displayedValue === '0'
+    const isAlreadyWithDot = displayedValue.includes('.')
     const isDotInput = input === '.'
-  
-    if (isInsertMode) {
-        if (isOnlyZero) {
-            if (isDotInput) {
-                Calculator.setDisplayedValue(`${displayedValue}${input}`)
-                Calculator.setIsFloat(true)
-            } else {
-                Calculator.setDisplayedValue(input)
-            }
-        } else {
-            if (isDotInput && isFloat) {
-                return
-            } else {
-                Calculator.setDisplayedValue(`${displayedValue}${input}`)
-            }
-        }
-    } else {
-        if (isDotInput) {
-            Calculator.setDisplayedValue(`0${input}`)
-            Calculator.setIsFloat(true)
-        } else {
-            Calculator.setDisplayedValue(input)
-        }
+    let newDisplayedValue: string | number = input
     
+    function numsInputStrategy (): void {
+        if (isInsertMode) {
+            // use Number to avoid leading zero
+            newDisplayedValue = Number(`${displayedValue}${input}`)
+        }
+    }
+    
+    function dotInputStrategy (): void {
+        if (isInsertMode && isAlreadyWithDot) { return }
+        
+        if (isInsertMode) {
+            newDisplayedValue = `${displayedValue}${input}`
+        } else {
+            newDisplayedValue = `0${input}` 
+        }
+    }
+    
+    if (isDotInput) {
+        dotInputStrategy()
+    } else {
+        numsInputStrategy()
+    }
+    
+    if (!isInsertMode) {
         Calculator.setInsertMode(true)
     }
+    
+    Calculator.setDisplayedValue(newDisplayedValue)
 }
 
 function isUnaryOperator (operator: string): boolean {
     return (
         operator === '+/-' ||
-      operator === '%'
+        operator === '%'
     )
 }
 
@@ -72,9 +74,11 @@ function operationBtnOnClick (e: Event): void {
     let result: number
   
     if (isUnaryOperator(newOperation)) {
+        const previousOperation = Calculator.getCurrentOperation()
+        
         Calculator.setCurrentOperation(newOperation)
         result = calculateResult()
-        Calculator.setCurrentOperation('=')
+        Calculator.setCurrentOperation(previousOperation)
     } else {
         result = calculateResult()
         Calculator.setCurrentOperation(newOperation)
@@ -83,7 +87,6 @@ function operationBtnOnClick (e: Event): void {
     Calculator.setPreviousValue(result)
     Calculator.setDisplayedValue(result)
     Calculator.setInsertMode(false)
-    Calculator.setIsFloat(false)
 }
 
 function calculateResult (): number {
@@ -125,7 +128,6 @@ function resultBtnOnClick (_: Event): void {
     Calculator.setDisplayedValue(result)
     Calculator.setCurrentOperation('=')
     Calculator.setInsertMode(false)
-    Calculator.setIsFloat(false)
 }
 
 function errorHandler (error: ErrorEvent): void {
