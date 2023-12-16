@@ -45,7 +45,7 @@ function numsButtonsOnClick (e: Event): void {
         if (isInsertMode) {
             newDisplayedValue = `${displayedValue}${input}`
         } else {
-            newDisplayedValue = `0${input}` 
+            newDisplayedValue = `0${input}`
         }
     }
     
@@ -74,11 +74,9 @@ function operationBtnOnClick (e: Event): void {
     let result: number
   
     if (isUnaryOperator(newOperation)) {
-        const previousOperation = Calculator.getCurrentOperation()
-        
         Calculator.setCurrentOperation(newOperation)
         result = calculateResult()
-        Calculator.setCurrentOperation(previousOperation)
+        Calculator.setCurrentOperation('=')
     } else {
         result = calculateResult()
         Calculator.setCurrentOperation(newOperation)
