@@ -1,26 +1,45 @@
 html {
   box-sizing: border-box;
 }
+
 body {
   font-family: sans-serif;
 }
+
 input {
   width: 146px;
 }
+
 button {
-  width: 35px;
   padding: 5px 0;
-  margin: 2px 0;
   cursor: pointer;
 }
+
+.calculator {
+  width: min-content;
+  border: 1px solid black;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 5px;
+}
+
 .display {
   display: flex;
   align-items: center;
   border: 1px solid black;
-  height: 30px;
-  max-width: 150px;
-  padding: 0 3px;
+  height: 50px;
+  padding: 0 15px;
 }
+
+.buttons {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 50px 50px 50px 50px;
+  grid-template-rows: 50px 50px 50px 50px 50px;
+}
+
 .zero {
-  width: 70px;
+  grid-column: 1 / span 2;
 }
